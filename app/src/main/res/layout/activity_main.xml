@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:contentDescription="For more ui/ux visit www.materialuiux.com"
+    android:fillViewport="true"
+    tools:context=".MainActivity"
+    tools:ignore="HardcodedText">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:contentDescription="For more ui/ux visit www.materialuiux.com"
+        tools:context=".MainActivity"
+        tools:ignore="ScrollViewSize">
+
+        <!-- Cover Layout -->
+        <LinearLayout
+            android:id="@+id/id_background_LinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="344dp"
+            android:contentDescription="For more ui/ux visit www.materialuiux.com">
+
+            <!-- Cover Image -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="For more ui/ux visit www.materialuiux.com"
+                android:scaleType="fitXY"
+                android:src="@drawable/image" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/id_background_LinearLayout"
+            android:background="@color/textPrimary"
+
+            android:contentDescription="For more ui/ux visit www.materialuiux.com">
+
+            <!-- Post List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/my_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="70dp"
+                android:layout_marginEnd="18dp"
+                android:contentDescription="For more ui/ux visit www.materialuiux.com"
+                tools:listitem="@layout/list_post_item" />
+
+        </LinearLayout>
+
+        <!-- Profile Image and full names and (flowers / flowing)
+       * you need to insert java code ro for the background * -->
+        <RelativeLayout
+            android:id="@+id/id_r1"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="180dp"
+            android:contentDescription="For more ui/ux visit www.materialuiux.com">
+
+
+            <RelativeLayout
+                android:id="@+id/id_profile_ImageView"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:contentDescription="For more ui/ux visit www.materialuiux.com">
+
+                <pl.bclogic.pulsator4droid.library.PulsatorLayout
+                    android:id="@+id/pulsator"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    app:pulse_color="#CA3D3D"
+                    app:pulse_count="4"
+                    app:pulse_duration="2000"
+                    app:pulse_interpolator="Linear"
+                    app:pulse_repeat="0"
+                    app:pulse_startFromScratch="false">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_sos"
+                        app:civ_border_color="#FFFFFF"
+                        app:civ_border_width="2dp"
+                        app:civ_circle_background_color="#FF0000" />
+                </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/textFallDetect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/id_profile_ImageView"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="For more ui/ux visit www.materialuiux.com"
+                android:text="Chưa phát hiện té ngã"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</ScrollView>

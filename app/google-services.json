@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "573244491",
+    "firebase_url": "https://fall-detector-55495-default-rtdb.firebaseio.com",
+    "project_id": "fall-detector-55495",
+    "storage_bucket": "fall-detector-55495.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573244491:android:8f3836967883436bedb9ce",
+        "android_client_info": {
+          "package_name": "com.devpro.fall_detector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573244491-n54hi9ri8imf9hrpklqc8rb1ufac9ucr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC83fa30UbaZtohNCnDPAw6T3k2sdyFTPQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573244491-n54hi9ri8imf9hrpklqc8rb1ufac9ucr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
