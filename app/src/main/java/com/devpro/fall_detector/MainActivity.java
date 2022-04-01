@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+        firebaseMessaging.subscribeToTopic("");
 
         layoutManager = new LinearLayoutManager(this);
         binding.myRecyclerView.setFocusable(false);
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                         tokens.put(preferenceManager.getString(Constants.KEY_FCM_TOKEN));
 
                         JSONObject data = new JSONObject();
-                        data.put(Constants.KEY_MESSAGE, "Phát hiện té ngã! ");
+                        data.put(Constants.KEY_MESSAGE, "Phát hiện té ngã! \n " + fallList.get(0));
 
                         JSONObject body = new JSONObject();
                         body.put(Constants.REMOTE_MSG_DATA, data);
@@ -211,32 +212,14 @@ public class MainActivity extends AppCompatActivity {
 
                         System.out.println(body.toString());
 
+                        sendNotification(body.toString());
 
-                        String fakeJson = "{" +
-                                "    \"data\":{" +
-                                "        \"message\":\"Protect your Realtime Database resources from abuse, such as billing fraud or phishing\",\n" +
-                                "        \"user\":\"sdf\"" +
-                                "    }," +
-                                "    \"to\":\"fXcki7zHS9WXz0UW2hq6UO:APA91bHheyRodCzmWfsa_jBCpTaeZjMaPekJJ986_PSataGfNFFvhP3bl31M2okrfVpfAK4XHbYQu6oo4RpzPgD5SLZhW_PciZWCRjkoAd5fuGDiTDR_5YFCHWzchfBjhjxBGIRxMOON\"\n" +
-                                "}";
-//                        String fakeData1 = "{\n" +
-//                                "   \"to\":\"" + preferenceManager.getString(Constants.KEY_FCM_TOKEN) + "\",\n" +
-//                                "   \"notification\":{\n" +
-//                                "      \"title\":\"hello it's test\",\n" +
-//                                "      \"body\":\"still a test\"\n" +
-//                                "   },\n" +
-//                                "   \"data\":{\n" +
-//                                "      \"message\":\"direction\",\n" +
-//                                "      \"MSG\":\"this is a test notifiation\",\n" +
-//                                "      \"Notifications_Data\":5\n" +
-//                                "   }\n" +
-//                                "}";
-//                    sendNotification(body.toString());
-                        System.out.println(fakeJson);
-                        sendNotification(fakeJson);
                     } catch (Exception e) {
                         showToast(e.getMessage());
                     }
+                } else {
+                    binding.pulsator.stop();
+                    binding.textFallDetect.setText("Chưa phát hiện té ngã ");
                 }
             }
 

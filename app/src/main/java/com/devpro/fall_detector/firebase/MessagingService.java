@@ -20,6 +20,8 @@ import com.devpro.fall_detector.Constants;
 import com.devpro.fall_detector.MainActivity;
 import com.devpro.fall_detector.R;
 import com.devpro.fall_detector.models.User;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -28,6 +30,8 @@ public class MessagingService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
         Log.d("FCM", "Token: " + token);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("fcmToken").child(token).setValue(token);
     }
 
     @Override
@@ -57,7 +61,7 @@ public class MessagingService extends FirebaseMessagingService {
         builder.setContentTitle(user.name);
         builder.setContentText(remoteMessage.getData().get(Constants.KEY_MESSAGE));
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getData().get(Constants.KEY_MESSAGE)));
-        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setContentIntent(pendingIntent);
         builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
         builder.setLights(0xff0000ff, 300, 1000);
