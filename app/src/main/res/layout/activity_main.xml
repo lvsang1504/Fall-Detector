@@ -101,17 +101,31 @@
             </RelativeLayout>
 
 
-            <TextView
-                android:id="@+id/textFallDetect"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/id_profile_ImageView"
                 android:layout_centerHorizontal="true"
-                android:contentDescription="For more ui/ux visit www.materialuiux.com"
-                android:text="Chưa phát hiện té ngã"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textFallDetect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="For more ui/ux visit www.materialuiux.com"
+                    android:text="Chưa phát hiện té ngã"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="25sp" />
+                <Button
+                    android:textColor="@color/white"
+                    android:id="@+id/btnSkip"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:background="@color/red"
+                    android:layout_width="wrap_content"
+                    android:text="Bỏ qua cảnh báo"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
         </RelativeLayout>
 

@@ -79,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
         getToken();
 
         getDataHistoryFallDetect();
+
+        binding.btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.btnSkip.setVisibility(View.INVISIBLE);
+                binding.pulsator.stop();
+                binding.textFallDetect.setText("Chưa phát hiện té ngã ");
+                Toast.makeText(MainActivity.this, "Đã bỏ qua cảnh báo!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     void actionDialogFallDetector() {
@@ -198,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 if (minute < 900) {
                     binding.pulsator.start();
                     binding.textFallDetect.setText("Cảnh báo phát hiện té ngã ");
+                    binding.btnSkip.setVisibility(View.VISIBLE);
                     actionDialogFallDetector();
                     try {
                         JSONArray tokens = new JSONArray();
