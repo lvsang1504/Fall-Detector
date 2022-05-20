@@ -4,6 +4,10 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
+#include <ArduinoJson.h>
+#include "ESP8266WiFi.h"
+#include <ESP8266HTTPClient.h>
+
 //for get current time
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
@@ -19,13 +23,42 @@ byte trigger1count = 0; //stores the counts past since trigger 1 was set true
 byte trigger2count = 0; //stores the counts past since trigger 2 was set true
 byte trigger3count = 0; //stores the counts past since trigger 3 was set true
 int angleChange = 0;
-// Set these to run example.
-#define FIREBASE_HOST "fall-detector-55495-default-rtdb.firebaseio.com"
+// Set up firebase.
+#define FIREBASE_HOST "fall-detector-55495-default-rtdb.firebaseio.com" 
+
 #define FIREBASE_AUTH "2PLr7evoGRknFJe6yQbo651kMjpW84gX3WDpmxyo"
-#define WIFI_SSID "iloveyouverymuch"
-#define WIFI_PASSWORD "HoChiMinh"
+
+//Credentials for Google GeoLocation API...
+const char* Host = "www.googleapis.com";
+
+String thisPage = "/geolocation/v1/geolocate?key=";
+
+String key = "AIzaSyBcDWqaGwpJyz57hwd_9fyRp9fDy2TxBVc";
+
+int status = WL_IDLE_STATUS;
+
+String jsonString = "{\n";
+
+double latitude    = 0.0;
+
+double longitude   = 0.0;
+
+double accuracy    = 0.0;
+
+int more_text = 1;    // set to 1 for more debug output
+
+//Wifi
+#define WIFI_SSID "there_is_no_one_at_all"
+#define WIFI_PASSWORD "123456788"
+
+
+
+
 void setup() {
   Serial.begin(115200);
+
+  WiFi.mode(WIFI_STA);
+  
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   timeClient.begin();
   timeClient.setTimeOffset(25200); //GMT -1 = -3600 // GMT 0 = 0
@@ -47,6 +80,8 @@ void setup() {
   Serial.println("WiFi connected" + WiFi.localIP());
 
 }
+
+
 void loop() {
   mpu_read();
   ax = (AcX - 2050) / 16384.00;
@@ -99,7 +134,7 @@ void loop() {
   if (fall == true) { //in event of a fall detection
     Serial.println("FALL DETECTED");
 
-    send_data();
+    get_information();
 
     fall = false;
   }
@@ -114,7 +149,247 @@ void loop() {
   delay(100);
 }
 
-void send_data() {
+
+
+
+void get_information(){
+  
+  char bssid[6];
+
+  DynamicJsonBuffer jsonBuffer;
+
+  Serial.println("scan start");
+  
+  // WiFi.scanNetworks will return the number of networks found
+
+  int n = WiFi.scanNetworks();
+
+  Serial.println("scan done");
+
+  if (n == 0)
+
+    Serial.println("no networks found");
+
+  else
+
+  {
+
+    Serial.print(n);
+
+    Serial.println(" networks found...");
+
+
+    if (more_text) {
+
+      Serial.println("\"wifiAccessPoints\": [");
+
+      for (int i = 0; i < n; ++i)
+
+      {
+
+        Serial.println("{");
+
+        Serial.print("\"macAddress\" : \"");
+
+        Serial.print(WiFi.BSSIDstr(i));
+
+        Serial.println("\",");
+
+        Serial.print("\"signalStrength\": ");
+
+        Serial.println(WiFi.RSSI(i));
+
+        if (i < n - 1)
+
+        {
+
+          Serial.println("},");
+
+        }
+
+        else
+
+        {
+
+          Serial.println("}");
+
+        }
+
+      }
+
+      Serial.println("]");
+
+      Serial.println("}");
+
+    }
+
+    Serial.println(" ");
+
+  }
+
+
+  // now build the jsonString...
+
+  jsonString = "{\n";
+
+  jsonString += "\"homeMobileCountryCode\": 234,\n"; // this is a real UK MCC
+
+  jsonString += "\"homeMobileNetworkCode\": 27,\n";  // and a real UK MNC
+
+  jsonString += "\"radioType\": \"gsm\",\n";         // for gsm
+
+  jsonString += "\"carrier\": \"Vodafone\",\n";      // associated with Vodafone
+
+  jsonString += "\"wifiAccessPoints\": [\n";
+
+  for (int j = 0; j < n; ++j)
+
+  {
+
+    jsonString += "{\n";
+
+    jsonString += "\"macAddress\" : \"";
+
+    jsonString += (WiFi.BSSIDstr(j));
+
+    jsonString += "\",\n";
+
+    jsonString += "\"signalStrength\": ";
+
+    jsonString += WiFi.RSSI(j);
+
+    jsonString += "\n";
+
+    if (j < n - 1)
+
+    {
+
+      jsonString += "},\n";
+
+    }
+
+    else
+
+    {
+
+      jsonString += "}\n";
+
+    }
+
+  }
+
+  jsonString += ("]\n");
+
+  jsonString += ("}\n");
+
+
+  //-------------------------------------------------------------------- Serial.println("");
+
+
+  //Connect to the client and make the api call
+
+
+  WiFiClientSecure client;
+
+  client.setInsecure();
+
+  Serial.print("Requesting URL: ");
+
+  Serial.println("https://" + (String)Host + thisPage + key);
+
+  delay(500);
+
+  Serial.println(" ");
+
+  if (client.connect(Host, 443)) {
+
+    Serial.println("Connected");
+
+    client.println("POST " + thisPage + key + " HTTP/1.1");
+
+    client.println("Host: " + (String)Host);
+
+    client.println("Connection: close");
+
+    client.println("Content-Type: application/json");
+
+    client.println("User-Agent: Arduino/1.0");
+
+    client.print("Content-Length: ");
+
+    client.println(jsonString.length());
+
+    client.println();
+
+    client.print(jsonString);
+
+    delay(2000);
+
+  }
+
+
+  //Read and parse all the lines of the reply from server
+
+  Serial.print(client.available());
+  Serial.print("client");
+
+  while (client.available()) {
+
+    String line = client.readStringUntil('\r');
+
+    if (more_text) {
+
+      Serial.print(line);
+
+    }
+
+    JsonObject& root = jsonBuffer.parseObject(line);
+
+    Serial.print(root.success());
+
+    if (root.success()) {
+
+      latitude    = root["location"]["lat"];
+
+      longitude   = root["location"]["lng"];
+
+      accuracy   = root["accuracy"];
+
+    }
+
+  }
+
+
+  Serial.println("closing connection");
+
+  Serial.println();
+
+  client.stop();
+
+  
+
+
+  Serial.print("Latitude = ");
+
+  Serial.println(latitude, 6);
+
+  Serial.print("Longitude = ");
+
+  Serial.println(longitude, 6);
+
+  Serial.print("Accuracy = ");
+
+  Serial.println(accuracy);
+
+  send_data(longitude, latitude);
+
+}
+
+
+
+
+void send_data(double longitude ,double  latitude) {
+  
   timeClient.update();
 
   Serial.println(timeClient.getFormattedTime());
@@ -125,14 +400,18 @@ void send_data() {
   int currentYear = ptm->tm_year+1900;
   String currentDate = String(currentYear) + "-" + String(currentMonth) + "-" + String(monthDay) + " " + timeClient.getFormattedTime() ;
   String key = "/FallDetector/DetectAt" + String(timeClient.getEpochTime()) + "/";
-  Firebase.setString(key,currentDate );
+  Firebase.setString(key + "time",currentDate );
+  Firebase.setString(key + "longitude",String(longitude,6));
+  Firebase.setString(key + "latitude",String(latitude,6));
   if (Firebase.failed())
   {
     Serial.print("pushing /logs failed:");
     Serial.println(Firebase.error());
+    delay(500);
     return;
   }
 }
+
 
 void mpu_read() {
   Wire.beginTransmission(MPU_addr);
