@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.devpro.fall_detector.adapter.PostAdapter;
 import com.devpro.fall_detector.databinding.ActivityMainBinding;
+import com.devpro.fall_detector.models.FallResponse;
 import com.devpro.fall_detector.network.ApiClient;
 import com.devpro.fall_detector.network.ApiService;
 import com.devpro.fall_detector.utilities.PreferenceManager;
@@ -180,10 +181,11 @@ public class MainActivity extends AppCompatActivity {
         fallDetectQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> fallList = new ArrayList<String>();
+                List<FallResponse> fallList = new ArrayList<FallResponse>();
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    fallList.add(postSnapshot.getValue().toString());
+                    FallResponse fallResponse = postSnapshot.getValue(FallResponse.class);
+                    fallList.add(fallResponse);
                 }
 
                 Collections.reverse(fallList);
@@ -194,7 +196,11 @@ public class MainActivity extends AppCompatActivity {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 Date pasTime = null;
                 try {
-                    pasTime = dateFormat.parse(fallList.get(0));
+                    if (fallList.get(0).time != null) {
+                        pasTime = dateFormat.parse(fallList.get(0).time);
+                    } else {
+                        pasTime = new Date();
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -202,10 +208,10 @@ public class MainActivity extends AppCompatActivity {
                 Date nowTime = new Date();
 
                 long dateDiff = nowTime.getTime() - pasTime.getTime();
-                long minute = TimeUnit.MILLISECONDS.toSeconds(dateDiff);
+                long second = TimeUnit.MILLISECONDS.toSeconds(dateDiff);
 
 
-                if (minute < 900) {
+                if (second < 900) {
                     binding.pulsator.start();
                     binding.textFallDetect.setText("Cảnh báo phát hiện té ngã ");
                     binding.btnSkip.setVisibility(View.VISIBLE);
@@ -215,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                         tokens.put(preferenceManager.getString(Constants.KEY_FCM_TOKEN));
 
                         JSONObject data = new JSONObject();
-                        data.put(Constants.KEY_MESSAGE, "Phát hiện té ngã! \n " + fallList.get(0));
+                        data.put(Constants.KEY_MESSAGE, "Phát hiện té ngã! \n " + fallList.get(0).time);
 
                         JSONObject body = new JSONObject();
                         body.put(Constants.REMOTE_MSG_DATA, data);

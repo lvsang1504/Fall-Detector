@@ -1,6 +1,7 @@
 package com.devpro.fall_detector.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.devpro.fall_detector.R;
+import com.devpro.fall_detector.models.FallResponse;
 import com.devpro.fall_detector.utilities.TimeAgo;
 
 import java.text.ParseException;
@@ -18,9 +20,9 @@ import java.util.Date;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
-    private List<String> mData;
+    private List<FallResponse> mData;
 
-    public PostAdapter(List<String> Data) {
+    public PostAdapter(List<FallResponse> Data) {
         mData = Data;
     }
 
@@ -42,7 +44,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String strDate = mData.get(position);
+        String strDate = mData.get(position).time;
         try {
             date = sdf.parse(strDate);
         } catch (ParseException e) {
@@ -50,8 +52,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
 
-        viewHolder.fallText.setText("Phát hiện té ngã " + new TimeAgo().covertTimeToText(mData.get(position)));
+        viewHolder.fallText.setText("Phát hiện té ngã " + new TimeAgo().covertTimeToText(mData.get(position).time));
         viewHolder.text_date.setText(sdf.format(date));
+
+        Log.d("SOS", "Vị trí latitude: " + mData.get(position).longitude + " và latitude: "+ mData.get(position).latitude);
     }
 
     @Override
