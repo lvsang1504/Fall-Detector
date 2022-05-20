@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.devpro.fall_detector.R;
+import com.devpro.fall_detector.listeners.MapListener;
 import com.devpro.fall_detector.models.FallResponse;
 import com.devpro.fall_detector.utilities.TimeAgo;
 
@@ -21,9 +23,11 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<FallResponse> mData;
+    MapListener listener;
 
-    public PostAdapter(List<FallResponse> Data) {
-        mData = Data;
+    public PostAdapter(List<FallResponse> mData, MapListener listener) {
+        this.mData = mData;
+        this.listener = listener;
     }
 
     @NonNull
@@ -55,6 +59,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         viewHolder.fallText.setText("Phát hiện té ngã " + new TimeAgo().covertTimeToText(mData.get(position).time));
         viewHolder.text_date.setText(sdf.format(date));
 
+        viewHolder.btn_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.mapViewClicks(mData.get(viewHolder.getAdapterPosition()));
+            }
+        });
+
         Log.d("SOS", "Vị trí latitude: " + mData.get(position).longitude + " và latitude: "+ mData.get(position).latitude);
     }
 
@@ -65,11 +76,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView fallText, text_date;
+        CardView btn_map;
 
         public ViewHolder(View v) {
             super(v);
             fallText = v.findViewById(R.id.id_postText_TextView);
             text_date = v.findViewById(R.id.text_date);
+            btn_map = v.findViewById(R.id.btn_map);
         }
 
     }

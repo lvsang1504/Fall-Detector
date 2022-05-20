@@ -12,7 +12,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="180dp"
         android:contentDescription="For more ui/ux visit www.materialuiux.com">
 
         <RelativeLayout
@@ -32,24 +32,69 @@
                 android:background="@drawable/bg_recat"
                 android:contentDescription="For more ui/ux visit www.materialuiux.com">
 
-                <TextView
-                    android:id="@+id/id_postText_TextView"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="45dp"
-                    android:layout_marginLeft="45dp"
-                    android:layout_marginTop="31dp"
-                    android:layout_marginEnd="13dp"
-                    android:layout_marginRight="13dp"
-                    android:layout_marginBottom="30dp"
-                    android:contentDescription="For more ui/ux visit www.materialuiux.com"
-                    android:gravity="center|left"
-                    android:maxLines="3"
-                    android:text="From error to error, one discovers the entire truth.” “From error to error, one discovers the entire truth.” Sigmund Freud."
-                    android:textColor="@color/textPrimary"
-                    android:textSize="18sp"
-                    tools:ignore="RtlHardcoded" />
+                    android:orientation="vertical"
+                    android:weightSum="15">
+
+                    <TextView
+                        android:id="@+id/id_postText_TextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="45dp"
+                        android:layout_marginLeft="45dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="13dp"
+                        android:layout_marginRight="13dp"
+                        android:layout_marginBottom="20dp"
+                        android:contentDescription="For more ui/ux visit www.materialuiux.com"
+                        android:gravity="center|left"
+                        android:maxLines="3"
+                        android:text="From error to error, one discovers the entire truth.” “From error to error, one discovers the entire truth.” Sigmund Freud."
+                        android:textColor="@color/textPrimary"
+                        android:textSize="18sp"
+                        tools:ignore="RtlHardcoded" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/btn_map"
+                        android:layout_margin="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:elevation="4dp"
+                        app:cardCornerRadius="12dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="@color/md_grey_400"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/id_postText_TextView"
+                                android:layout_gravity="center"
+                                android:layout_weight="2"
+                                android:backgroundTint="@color/md_grey_400"
+                                android:src="@drawable/ic_map" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/see_map"
+                                android:textColor="@color/textPrimary"
+                                android:textSize="18sp"
+                                tools:ignore="RtlHardcoded" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
 
             </RelativeLayout>

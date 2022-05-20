@@ -3,12 +3,15 @@ package com.devpro.fall_detector;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 
 import com.devpro.fall_detector.adapter.PostAdapter;
 import com.devpro.fall_detector.databinding.ActivityMainBinding;
+import com.devpro.fall_detector.listeners.MapListener;
 import com.devpro.fall_detector.models.FallResponse;
 import com.devpro.fall_detector.network.ApiClient;
 import com.devpro.fall_detector.network.ApiService;
@@ -32,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
         getToken();
 
         getDataHistoryFallDetect();
+
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]
+                        {Manifest.permission.ACCESS_FINE_LOCATION},
+                PackageManager.PERMISSION_GRANTED);
 
         binding.btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Collections.reverse(fallList);
 
-                _mAdapter = new PostAdapter(fallList);
+                _mAdapter = new PostAdapter(fallList, mapListener);
                 binding.myRecyclerView.setAdapter(_mAdapter);
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -246,5 +255,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    MapListener mapListener = new MapListener() {
+        @Override
+        public void mapViewClicks(FallResponse fallResponse) {
+            Intent intent = new Intent(MainActivity.this, MapViewActivity.class);
+
+            Gson gson = new Gson();
+            String myJson = gson.toJson(fallResponse);
+            intent.putExtra("fallResponse", myJson);
+
+            startActivity(intent);
+        }
+    };
 
 }
